@@ -7,10 +7,9 @@
   },
   "reply_style": {
     "description": "回复风格",
-    "type": "enum",
+    "type": "string",
     "default": "balanced",
-    "enum_values": ["enthusiastic", "balanced", "gentle"],
-    "enum_labels": ["激励型(超燃💪)", "平衡型(推荐✨)", "温柔型(治愈🌙)"]
+    "hint": "可选: enthusiastic(激励型💪) / balanced(平衡型✨推荐) / gentle(温柔型🌙)"
   },
   "max_conversation_rounds": {
     "description": "最大对话轮数",

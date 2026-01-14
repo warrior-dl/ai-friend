@@ -30,7 +30,15 @@ class AIFriendPlugin(Star):
 
         # 读取配置
         self.scheduled_time = config.get("scheduled_time", "22:00")
-        self.reply_style = config.get("reply_style", "balanced")
+
+        # 验证回复风格
+        reply_style = config.get("reply_style", "balanced")
+        valid_styles = ["enthusiastic", "balanced", "gentle"]
+        if reply_style not in valid_styles:
+            logger.warning(f"[AI Friend] 无效的回复风格 '{reply_style}'，使用默认值 'balanced'")
+            reply_style = "balanced"
+        self.reply_style = reply_style
+
         self.max_rounds = config.get("max_conversation_rounds", 3)
         self.session_timeout = config.get("session_timeout", 60)
 
