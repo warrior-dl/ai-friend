@@ -293,14 +293,6 @@ class AIFriendPlugin(Star):
         # 启动对话会话
         await self._start_conversation(event)
 
-    @filter.command("summary", alias={"今日总结", "总结"})
-    async def daily_summary(self, event: AstrMessageEvent):
-        """今日总结（夸夸我的别名）"""
-        yield event.plain_result("来说说今天的收获吧，哪怕是很小的一件事~")
-
-        # 启动对话会话
-        await self._start_conversation(event)
-
     async def _start_conversation(self, event: AstrMessageEvent, round_count: int = 1):
         """
         启动对话会话
@@ -343,7 +335,7 @@ class AIFriendPlugin(Star):
             await conversation_handler(event)
         except asyncio.TimeoutError:
             # 超时处理
-            timeout_msg = "看来你已经去休息了~ 累了就早点睡，晚安！🌙"
+            timeout_msg = "如果累了就早点睡，晚安！🌙"
             await event.send(event.plain_result(timeout_msg))
         except Exception as e:
             logger.error(f"[AI Friend] 对话异常: {e}")
