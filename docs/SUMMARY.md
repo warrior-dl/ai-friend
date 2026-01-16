@@ -1,10 +1,10 @@
-# AI Friend 项目开发总结
+# CheerMate 项目开发总结
 
 > 更新时间: 2026-01-12
 
 ## 项目概况
 
-**项目名称**: AI Friend - 陪伴机器人插件
+**项目名称**: CheerMate - 陪伴机器人插件
 **版本**: v0.1.0 (MVP)
 **状态**: ✅ MVP 开发完成，可以测试
 
@@ -235,9 +235,9 @@ cp -r ai-friend /path/to/AstrBot/data/plugins/astrbot_plugin_ai_friend
 
 ## 贡献者
 
-- 产品设计: AI Friend Team
-- 代码实现: AI Friend Team
-- 文档编写: AI Friend Team
+- 产品设计: CheerMate Team
+- 代码实现: CheerMate Team
+- 文档编写: CheerMate Team
 
 ---
 

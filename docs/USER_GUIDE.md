@@ -1,4 +1,4 @@
-# AI Friend 使用指南
+# CheerMate 使用指南
 
 > 让每一天都被温柔以待 💙
 

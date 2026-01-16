@@ -1,5 +1,5 @@
 """
-AI Friend - 陪伴机器人插件
+CheerMate - 陪伴机器人插件
 一个温暖的陪伴插件，在你焦虑时无条件肯定你
 """
 import os
@@ -24,7 +24,7 @@ from astrbot.core.utils.session_waiter import session_waiter, SessionController
     "0.1.0",
     "https://github.com/warrior-dl/astrbot_plugin_cheer_mate"
 )
-class AIFriendPlugin(Star):
+class CheerMatePlugin(Star):
     """AI陪伴机器人插件"""
 
     def __init__(self, context: Context, config: dict):
@@ -44,8 +44,8 @@ class AIFriendPlugin(Star):
         # 定时任务
         self.scheduler_task = None
 
-        logger.info(f"[AI Friend] 插件初始化完成")
-        logger.info(f"[AI Friend] 配置: 推送时间={self.scheduled_time}")
+        logger.info(f"[CheerMate] 插件初始化完成")
+        logger.info(f"[CheerMate] 配置: 推送时间={self.scheduled_time}")
 
     async def initialize(self):
         """初始化插件，启动定时任务"""
@@ -55,28 +55,28 @@ class AIFriendPlugin(Star):
         # 启动定时任务（保存任务引用）
         self.scheduler_task = asyncio.create_task(self._start_scheduler())
         
-        logger.info(f"[AI Friend] 插件启动成功，已加载 {len(self.subscribers)} 个订阅用户")
+        logger.info(f"[CheerMate] 插件启动成功，已加载 {len(self.subscribers)} 个订阅用户")
 
     async def _load_subscribers(self):
         """从存储加载订阅用户列表"""
         try:
             data = await self.get_kv_data("subscribers", [])
             self.subscribers = set(data)
-            logger.info(f"[AI Friend] 已加载 {len(self.subscribers)} 个订阅用户")
+            logger.info(f"[CheerMate] 已加载 {len(self.subscribers)} 个订阅用户")
         except Exception as e:
-            logger.error(f"[AI Friend] 加载订阅列表失败: {e}")
+            logger.error(f"[CheerMate] 加载订阅列表失败: {e}")
 
     async def _save_subscribers(self):
         """保存订阅用户列表到存储"""
         try:
             await self.put_kv_data("subscribers", list(self.subscribers))
-            logger.info(f"[AI Friend] 订阅列表已保存")
+            logger.info(f"[CheerMate] 订阅列表已保存")
         except Exception as e:
-            logger.error(f"[AI Friend] 保存订阅列表失败: {e}")
+            logger.error(f"[CheerMate] 保存订阅列表失败: {e}")
 
     async def _start_scheduler(self):
         """启动定时任务"""
-        logger.info(f"[AI Friend] 定时任务已启动，推送时间: {self.scheduled_time}")
+        logger.info(f"[CheerMate] 定时任务已启动，推送时间: {self.scheduled_time}")
         
         last_push_date = None  # 记录上次推送的日期
 
@@ -94,7 +94,7 @@ class AIFriendPlugin(Star):
 
                 # 计算等待时间
                 wait_seconds = (target_time - now).total_seconds()
-                logger.info(f"[AI Friend] 下次推送时间: {target_time}, 等待 {wait_seconds:.0f} 秒")
+                logger.info(f"[CheerMate] 下次推送时间: {target_time}, 等待 {wait_seconds:.0f} 秒")
 
                 # 等待到触发时间
                 await asyncio.sleep(wait_seconds)
@@ -102,7 +102,7 @@ class AIFriendPlugin(Star):
                 # 检查今天是否已经推送过
                 today = datetime.now().date()
                 if last_push_date == today:
-                    logger.warning(f"[AI Friend] 今天已推送过，跳过本次推送")
+                    logger.warning(f"[CheerMate] 今天已推送过，跳过本次推送")
                     await asyncio.sleep(60)
                     continue
 
@@ -113,17 +113,17 @@ class AIFriendPlugin(Star):
                 await asyncio.sleep(3600)
 
             except Exception as e:
-                logger.error(f"[AI Friend] 定时任务异常: {e}")
+                logger.error(f"[CheerMate] 定时任务异常: {e}")
                 # 出错后等待5分钟再重试
                 await asyncio.sleep(300)
 
     async def _send_daily_greeting(self):
         """向所有订阅用户发送每日问候"""
         if not self.subscribers:
-            logger.info(f"[AI Friend] 无订阅用户，跳过推送")
+            logger.info(f"[CheerMate] 无订阅用户，跳过推送")
             return
 
-        logger.info(f"[AI Friend] 开始向 {len(self.subscribers)} 个用户推送问候")
+        logger.info(f"[CheerMate] 开始向 {len(self.subscribers)} 个用户推送问候")
 
         # 向每个订阅用户推送
         success_count = 0
@@ -138,15 +138,15 @@ class AIFriendPlugin(Star):
                 # 发送消息
                 await self.context.send_message(user_id, chain)
                 success_count += 1
-                logger.info(f"[AI Friend] 成功推送给用户: {user_id}")
+                logger.info(f"[CheerMate] 成功推送给用户: {user_id}")
 
                 # 避免发送过快
                 await asyncio.sleep(0.5)
 
             except Exception as e:
-                logger.error(f"[AI Friend] 推送给 {user_id} 失败: {e}")
+                logger.error(f"[CheerMate] 推送给 {user_id} 失败: {e}")
 
-        logger.info(f"[AI Friend] 推送完成: 成功 {success_count}/{len(self.subscribers)}")
+        logger.info(f"[CheerMate] 推送完成: 成功 {success_count}/{len(self.subscribers)}")
 
     async def _generate_personalized_greeting(self, user_id: str) -> str:
         """
@@ -166,14 +166,14 @@ class AIFriendPlugin(Star):
 
             if not conversation or not conversation.history:
                 # 新用户或无历史，使用默认问候语
-                logger.info(f"[AI Friend] 用户 {user_id} 无历史记录，使用默认问候语")
+                logger.info(f"[CheerMate] 用户 {user_id} 无历史记录，使用默认问候语")
                 return self._get_default_greeting()
 
             # 2. 解析历史记录
             messages = json.loads(conversation.history)
 
             if not messages:
-                logger.info(f"[AI Friend] 用户 {user_id} 历史为空，使用默认问候语")
+                logger.info(f"[CheerMate] 用户 {user_id} 历史为空，使用默认问候语")
                 return self._get_default_greeting()
 
             # 3. 只取最近 3-5 条对话（最近3轮）
@@ -191,16 +191,16 @@ class AIFriendPlugin(Star):
                 scheduled_time=self.scheduled_time,
                 history_text=history_text
             )
-            logger.debug(f"[AI Friend] 个性化问候 Prompt:\n{prompt}")
+            logger.debug(f"[CheerMate] 个性化问候 Prompt:\n{prompt}")
 
             # 6. 调用 LLM 生成
             provider_id = await self.context.get_current_chat_provider_id(user_id)
 
             if not provider_id:
-                logger.warning(f"[AI Friend] 无法获取用户 {user_id} 的 provider_id，使用默认问候语")
+                logger.warning(f"[CheerMate] 无法获取用户 {user_id} 的 provider_id，使用默认问候语")
                 return self._get_default_greeting()
 
-            logger.info(f"[AI Friend] 正在为用户 {user_id} 生成个性化问候语...")
+            logger.info(f"[CheerMate] 正在为用户 {user_id} 生成个性化问候语...")
             llm_resp = await self.context.llm_generate(
                 chat_provider_id=provider_id,
                 prompt=prompt,
@@ -209,14 +209,14 @@ class AIFriendPlugin(Star):
 
             if llm_resp and llm_resp.completion_text:
                 personalized_greeting = llm_resp.completion_text.strip()
-                logger.info(f"[AI Friend] 个性化问候语生成成功")
+                logger.info(f"[CheerMate] 个性化问候语生成成功")
                 return personalized_greeting
             else:
-                logger.warning(f"[AI Friend] LLM 返回空回复，使用默认问候语")
+                logger.warning(f"[CheerMate] LLM 返回空回复，使用默认问候语")
                 return self._get_default_greeting()
 
         except Exception as e:
-            logger.error(f"[AI Friend] 生成个性化问候语失败: {e}")
+            logger.error(f"[CheerMate] 生成个性化问候语失败: {e}")
             return self._get_default_greeting()
 
     def _get_default_greeting(self) -> str:
@@ -243,18 +243,18 @@ class AIFriendPlugin(Star):
         try:
             # 构建 Prompt（直接使用配置中的提示词）
             prompt = self.praise_prompt.format(user_input=user_input)
-            logger.debug(f"[AI Friend] 夸夸回复 Prompt:\n{prompt}")
+            logger.debug(f"[CheerMate] 夸夸回复 Prompt:\n{prompt}")
 
             # 获取当前聊天的 provider_id
             umo = event.unified_msg_origin
             provider_id = await self.context.get_current_chat_provider_id(umo)
 
             if not provider_id:
-                logger.error(f"[AI Friend] 无法获取 provider_id")
+                logger.error(f"[CheerMate] 无法获取 provider_id")
                 return self._get_fallback_reply(user_input)
 
             # 调用 LLM 生成回复
-            logger.info(f"[AI Friend] 调用 LLM 生成回复...")
+            logger.info(f"[CheerMate] 调用 LLM 生成回复...")
             llm_resp = await self.context.llm_generate(
                 chat_provider_id=provider_id,
                 prompt=prompt,
@@ -263,14 +263,14 @@ class AIFriendPlugin(Star):
 
             if llm_resp and llm_resp.completion_text:
                 reply = llm_resp.completion_text.strip()
-                logger.info(f"[AI Friend] AI回复生成成功")
+                logger.info(f"[CheerMate] AI回复生成成功")
                 return reply
             else:
-                logger.warning(f"[AI Friend] LLM 返回空回复")
+                logger.warning(f"[CheerMate] LLM 返回空回复")
                 return self._get_fallback_reply(user_input)
 
         except Exception as e:
-            logger.error(f"[AI Friend] 生成回复失败: {e}")
+            logger.error(f"[CheerMate] 生成回复失败: {e}")
             return self._get_fallback_reply(user_input)
 
     def _get_fallback_reply(self, user_input: str) -> str:
@@ -301,7 +301,7 @@ class AIFriendPlugin(Star):
         reply = f"订阅成功！🌟\n\n每天 {self.scheduled_time}，我会主动问候你：\n\"今天感觉怎么样？有什么想分享的吗？\"\n\n如果不想收到推送，发送 /关闭陪伴 即可取消~"
         yield event.plain_result(reply)
 
-        logger.info(f"[AI Friend] 用户 {user_id} 订阅成功")
+        logger.info(f"[CheerMate] 用户 {user_id} 订阅成功")
 
     @filter.command("unsubscribe", alias={"关闭陪伴", "取消订阅"})
     async def unsubscribe(self, event: AstrMessageEvent):
@@ -319,7 +319,7 @@ class AIFriendPlugin(Star):
         reply = "已取消订阅。\n如果想再次开启，随时发送 /开启陪伴~"
         yield event.plain_result(reply)
 
-        logger.info(f"[AI Friend] 用户 {user_id} 取消订阅")
+        logger.info(f"[CheerMate] 用户 {user_id} 取消订阅")
 
     @filter.command("praise", alias={"夸夸我", "夸我"})
     async def praise_me(self, event: AstrMessageEvent):
@@ -363,15 +363,15 @@ class AIFriendPlugin(Star):
             await conversation_handler(event)
         except asyncio.TimeoutError:
             # 超时静默结束，不发送消息
-            logger.info(f"[AI Friend] 对话超时，静默结束")
+            logger.info(f"[CheerMate] 对话超时，静默结束")
         except Exception as e:
-            logger.error(f"[AI Friend] 对话异常: {e}")
+            logger.error(f"[CheerMate] 对话异常: {e}")
             error_msg = "抱歉，遇到了一些问题... 你可以稍后再试试~"
             await event.send(event.plain_result(error_msg))
 
     async def terminate(self):
         """插件卸载时的清理方法（AstrBot 标准生命周期方法）"""
-        logger.info(f"[AI Friend] 开始清理插件资源...")
+        logger.info(f"[CheerMate] 开始清理插件资源...")
         
         # 取消定时任务
         if self.scheduler_task and not self.scheduler_task.done():
@@ -379,8 +379,8 @@ class AIFriendPlugin(Star):
             try:
                 await self.scheduler_task
             except asyncio.CancelledError:
-                logger.info(f"[AI Friend] 定时任务已取消")
+                logger.info(f"[CheerMate] 定时任务已取消")
             except Exception as e:
-                logger.error(f"[AI Friend] 取消定时任务时出错: {e}")
+                logger.error(f"[CheerMate] 取消定时任务时出错: {e}")
         
-        logger.info(f"[AI Friend] 插件资源清理完成")
+        logger.info(f"[CheerMate] 插件资源清理完成")

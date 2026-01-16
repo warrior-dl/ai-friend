@@ -1,4 +1,4 @@
-# AI Friend 插件指令列表
+# CheerMate 插件指令列表
 
 ## 可用指令
 
