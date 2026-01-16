@@ -3,4 +3,4 @@ display_name: CheerMate - 陪伴夸夸机器人
 description: 一个温暖的陪伴插件，在你焦虑时无条件肯定你。每天晚上主动问候，通过AI回复提供情绪价值。
 version: v0.1.0
 author: warrior-dl
-repo: https://github.com/warrior-dl/astrbot_plugin_cheer_mate.git
+repo: https://github.com/warrior-dl/astrbot_plugin_cheer_mate
