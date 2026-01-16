@@ -81,6 +81,8 @@ class AIFriendPlugin(Star):
     async def _start_scheduler(self):
         """启动定时任务"""
         logger.info(f"[AI Friend] 定时任务已启动，推送时间: {self.scheduled_time}")
+        
+        last_push_date = None  # 记录上次推送的日期
 
         while True:
             try:
@@ -101,11 +103,18 @@ class AIFriendPlugin(Star):
                 # 等待到触发时间
                 await asyncio.sleep(wait_seconds)
 
+                # 检查今天是否已经推送过
+                today = datetime.now().date()
+                if last_push_date == today:
+                    logger.warning(f"[AI Friend] 今天已推送过，跳过本次推送")
+                    await asyncio.sleep(60)
+                    continue
+
                 # 执行推送
                 await self._send_daily_greeting()
+                last_push_date = today
 
-                # 等待1分钟，避免重复触发
-                await asyncio.sleep(60)
+                await asyncio.sleep(3600)
 
             except Exception as e:
                 logger.error(f"[AI Friend] 定时任务异常: {e}")
