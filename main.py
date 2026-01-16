@@ -187,6 +187,7 @@ class AIFriendPlugin(Star):
                 scheduled_time=self.scheduled_time,
                 history_text=history_text
             )
+            logger.debug(f"[AI Friend] 个性化问候 Prompt:\n{prompt}")
 
             # 6. 调用 LLM 生成
             provider_id = await self.context.get_current_chat_provider_id(user_id)
@@ -238,6 +239,7 @@ class AIFriendPlugin(Star):
         try:
             # 构建 Prompt（直接使用配置中的提示词）
             prompt = self.praise_prompt.format(user_input=user_input)
+            logger.debug(f"[AI Friend] 夸夸回复 Prompt:\n{prompt}")
 
             # 获取当前聊天的 provider_id
             umo = event.unified_msg_origin
