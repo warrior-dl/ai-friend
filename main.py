@@ -6,7 +6,7 @@ import os
 import asyncio
 import json
 import random
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from pathlib import Path
 from typing import Dict, Set
 
@@ -31,7 +31,7 @@ class CheerMatePlugin(Star):
         super().__init__(context)
 
         # 读取配置
-        self.scheduled_time = config.get("scheduled_time", "22:00")
+        self.scheduled_time = self._validate_time_format(config.get("scheduled_time", "22:00"))
         self.session_timeout = config.get("session_timeout", 60)
 
         # 读取自定义提示词
@@ -46,6 +46,32 @@ class CheerMatePlugin(Star):
 
         logger.info(f"[CheerMate] 插件初始化完成")
         logger.info(f"[CheerMate] 配置: 推送时间={self.scheduled_time}")
+
+    def _validate_time_format(self, time_str: str) -> str:
+        """
+        验证时间格式是否为 HH:MM
+        
+        Args:
+            time_str: 时间字符串
+            
+        Returns:
+            验证后的时间字符串，如果格式错误则返回默认值 "22:00"
+        """
+        try:
+            parts = time_str.split(":")
+            if len(parts) != 2:
+                raise ValueError("时间格式必须为 HH:MM")
+            
+            hour = int(parts[0])
+            minute = int(parts[1])
+            
+            if not (0 <= hour <= 23 and 0 <= minute <= 59):
+                raise ValueError("小时必须在 0-23 之间，分钟必须在 0-59 之间")
+            
+            return time_str
+        except Exception as e:
+            logger.warning(f"[CheerMate] 时间格式错误 '{time_str}': {e}，使用默认值 '22:00'")
+            return "22:00"
 
     async def initialize(self):
         """初始化插件，启动定时任务"""
@@ -89,7 +115,6 @@ class CheerMatePlugin(Star):
 
                 # 如果今天的时间已过，设置为明天
                 if target_time <= now:
-                    from datetime import timedelta
                     target_time += timedelta(days=1)
 
                 # 计算等待时间
@@ -170,6 +195,10 @@ class CheerMatePlugin(Star):
                 return self._get_default_greeting()
 
             # 2. 解析历史记录
+            if not conversation.history or not isinstance(conversation.history, str):
+                logger.info(f"[CheerMate] 用户 {user_id} 历史记录为空或格式错误，使用默认问候语")
+                return self._get_default_greeting()
+            
             messages = json.loads(conversation.history)
 
             if not messages:
@@ -281,7 +310,6 @@ class CheerMatePlugin(Star):
             "太好了！能坚持到现在已经很不容易了，今天的你也在发光呢✨",
             "这已经很不错了！你的努力都被看见了，可以安心结束今天了。",
         ]
-        import random
         return random.choice(fallback_replies)
 
     @filter.command("subscribe", alias={"开启陪伴", "订阅"})
